@@ -1,28 +1,28 @@
-npm init
-npm install express
-npm install cors
-npm install mongoose
-npm start
+// npm init
+// npm install express
+// npm install cors
+// npm install mongoose
+// npm start
 
-import mongoose from 'mongoose';
-const { Schema } = mongoose;
-mongoose.connect('mongodb+srv://Xtalish:Xtalish@cluster0.fmz0rzv.mongodb.net/HelloStudent?retryWrites=true&w=majority');
-mongoose.set('strictQuery', false);
-const studdentSchema = new Schema({
-  Name:  String, // String is shorthand for {type: String}
-  CreateAt: { type: Date, default: Date.now },
-});
-const Student = mongoose.model('Students', studdentSchema );
+// import mongoose from 'mongoose';
+// const { Schema } = mongoose;
+// mongoose.connect('mongodb+srv://Xtalish:Xtalish@cluster0.fmz0rzv.mongodb.net/HelloStudent?retryWrites=true&w=majority');
+// mongoose.set('strictQuery', false);
+// const studdentSchema = new Schema({
+//   Name:  String, // String is shorthand for {type: String}
+//   CreateAt: { type: Date, default: Date.now },
+// });
+// const Student = mongoose.model('Students', studdentSchema );
 
 
 
-Student.post("/register", async (req, res) => {
+// Student.post("/register", async (req, res) => {
 
-  const user = await Student.create({
-    name: req.body.name,
+//   const user = await Student.create({
+//     name: req.body.name,
    
-  });
+//   });
 
-  return res.status(200).json(user);
-});
+//   return res.status(200).json(user);
+// });
 

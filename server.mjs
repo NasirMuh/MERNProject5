@@ -16,18 +16,38 @@ const workSchema = new Schema({
 });
 const Work = mongoose.model('Works', workSchema);
 
-// work api working for post
-app.post("/workpage", async (req, res) => {
-    const user = await Work.create({
-        Name: req.body.Name,
+// post request using api
+app.post("/workpage", (req, res) => {
+    const body = req.body;
+    if (!body.Name) {
+        res.status(400).send("required missing")
+        return;
+    }
+    Work.create({
+        Name: body.Name,
+    }, (err, data) => {
+        if (!err) {
+            res.send({ message: "Data is safed Successfully", data })
+        }
+        else {
+            return res.status(500).send({
+                message: "Server Error"
+            });
+        }
     });
-
-    return res.status(200).json(user);
 });
+
+// get request for all workpages using api
 app.get('/workspage', (req, res) => {
-    Work.find((err, data) => {
+
+    // this DATA will be return in array
+    Work.find({}, (err, data) => {
         if (err) {
             console.log(err);
+            res.status(500).send({
+                message: "server error",
+                error: `Error is ${err}`
+            })
         }
         else {
             res.send({
@@ -41,6 +61,94 @@ app.get('/workspage', (req, res) => {
     // this is for server side message
 
 })
+
+// get request only one workpage using api
+app.get('/workspage/:id', (req, res) => {
+
+    const id = req.params.id;
+
+    // this DATA will be return in object cos we are using findOne
+    Work.findOne({ _id: id }, (err, data) => {
+        if (!err) {
+            if (data) {
+                res.send({
+                    message: "All Work list here:",
+                    data: data
+                })
+            }
+            else {
+                res.status(404).send({
+                    message: "Data not found",
+                })
+            }
+        }
+        else {
+            res.status(500).send({
+                message: "server error",
+            })
+        }
+    });
+    // response back to server OR this message only see in server OR
+    // this is for server side message
+
+})
+
+
+// update request only one workpage using api
+app.put('/workpage/:id', async (req, res) => {
+
+    const id = req.params.id;
+    const body = req.body;
+    // this DATA will be return in object cos we are using findOne
+    try {
+        let updatedData = await Work.findByIdAndUpdate({ _id: id }, {
+            Name: body.Name
+        }, { new: true }
+        ).exec();
+        res.send({
+            message: "data is update",
+            data: updatedData
+        })
+    } catch (error) {
+        res.status(500).send({
+            message: "server error",
+        })
+    }
+});
+
+
+
+// delete request only one workpage using api
+app.delete('/workpage/:id', (req, res) => {
+
+    const id = req.params.id;
+    // this DATA will be return in object cos we are using findOne
+    Work.deleteOne({ _id: id }, (err, deleteddata) => {
+        if (!err) {
+            if (deleteddata.deletedCount !== 0) {
+                res.send({
+                    message: "data is deleted",
+                })
+            }
+            else {
+                res.status(404).send({
+                    message: "Data not found",
+                })
+            }
+        }
+        else {
+            res.status(500).send({
+                message: "server error",
+            })
+        }
+    });
+    // response back to server OR this message only see in server OR
+    // this is for server side message
+
+})
+
+
+
 
 app.get('/', (req, res) => {
     res.send({ message: "default Page" })
