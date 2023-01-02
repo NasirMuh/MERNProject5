@@ -23,18 +23,17 @@ app.post("/workpage", (req, res) => {
         res.status(400).send("required missing")
         return;
     }
-    Work.create({
-        Name: body.Name,
-    }, (err, data) => {
-        if (!err) {
-            res.send({ message: "Data is safed Successfully", data })
-        }
-        else {
-            return res.status(500).send({
-                message: "Server Error"
+    else {
+        Work.create({ Name: body.Name },
+            (err, data) => {
+                if (!err) {
+                    res.send({ message: "Data is safed Successfully", data })
+                }
+                else {
+                    return res.status(500).send({ message: "Server Error" });
+                }
             });
-        }
-    });
+    }
 });
 
 // get request for all workpages using api
@@ -43,30 +42,23 @@ app.get('/workspage', (req, res) => {
     // this DATA will be return in array
     Work.find({}, (err, data) => {
         if (err) {
-            console.log(err);
-            res.status(500).send({
-                message: "server error",
-                error: `Error is ${err}`
-            })
+            res.status(500).send({ message: "server error", })
         }
         else {
             res.send({
                 message: "All Work list here:",
                 data: data
             })
-            console.log("First Data : ", data);
         }
     });
-    // response back to server OR this message only see in server OR
+    // response //res back to server OR this message only see in server OR
     // this is for server side message
 
 })
 
 // get request only one workpage using api
 app.get('/workspage/:id', (req, res) => {
-
     const id = req.params.id;
-
     // this DATA will be return in object cos we are using findOne
     Work.findOne({ _id: id }, (err, data) => {
         if (!err) {
@@ -77,15 +69,11 @@ app.get('/workspage/:id', (req, res) => {
                 })
             }
             else {
-                res.status(404).send({
-                    message: "Data not found",
-                })
+                res.status(404).send({ message: "Data not found", })
             }
         }
         else {
-            res.status(500).send({
-                message: "server error",
-            })
+            res.status(500).send({ message: "server error", })
         }
     });
     // response back to server OR this message only see in server OR
